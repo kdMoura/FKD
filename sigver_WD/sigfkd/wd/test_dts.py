@@ -168,8 +168,9 @@ def parse_args():
     #parser.add_argument('--batch-size', type=int, default=32)
     parser.add_argument('--batch-size', type=int, default=1)
     parser.add_argument('--folds', type=int, default=10)
+    
+    return parser.parse_args()
 
-    arguments = parser.parse_args()
     
 if __name__ == '__main__':
 
