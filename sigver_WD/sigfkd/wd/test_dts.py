@@ -137,8 +137,7 @@ def main(args):
             pickle.dump(all_results, f)
     return all_results
 
-
-if __name__ == '__main__':
+def parse_args():
     parser = argparse.ArgumentParser()
     #parser.add_argument('-m', choices=models.available_models, required=True,
     #                    help='Model architecture', dest='model')
@@ -171,6 +170,9 @@ if __name__ == '__main__':
     parser.add_argument('--folds', type=int, default=10)
 
     arguments = parser.parse_args()
-    print(arguments)
+    
+if __name__ == '__main__':
 
+    arguments = parse_args()
+    print(arguments)
     main(arguments)
