@@ -180,11 +180,11 @@ def train_all_users_with_protosig(exp_train: Tuple[np.ndarray, np.ndarray, np.nd
     exp_y = exp_train[1]
     users = np.unique(exp_y)
 
+    exp_x, exp_y, exp_yforg = exp_train
     negative_samples = prototypical_sig
+    
     for user in tqdm(users):
- 
-        exp_x, exp_y, exp_yforg = exp_train
-
+        
         positive_samples = exp_x[(exp_y == user) & (exp_yforg == 0)]
         
         train_x = np.concatenate((positive_samples, negative_samples))
