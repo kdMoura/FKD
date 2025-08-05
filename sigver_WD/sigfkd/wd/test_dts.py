@@ -128,6 +128,7 @@ def main(args):
                                             num_forg_from_dev=args.forg_from_dev,
                                             num_gen_test=args.gen_for_test,
                                             num_SF_test=args.SF_for_test,
+                                            exp_test_users=args.exp_test_users,
                                             rng=rng)
         else:
             classifiers, results = training.train_test_all_users_dts_with_protosig(exp_set,
@@ -191,7 +192,9 @@ def parse_args():
     parser.add_argument('--batch-size', type=int, default=1)
     parser.add_argument('--folds', type=int, default=10)
     
-    parser.add_argument('--protosig-path')
+    parser.add_argument('--protosig-path', type=str)
+    parser.add_argument('--exp-test-users', type=int, nargs=2, 
+            help='Range of users to be tested while all other are employed as random forgeries for training') 
     
     return parser.parse_args()
 

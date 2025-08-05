@@ -407,6 +407,7 @@ def train_test_all_users_dts(exp_set: Tuple[np.ndarray, np.ndarray, np.ndarray],
                          num_forg_from_dev: int,
                          num_gen_test: int,
                          num_SF_test: int,
+                         exp_test_users:tuple,
                          global_threshold: float = 0,
                          rng: np.random.RandomState = np.random.RandomState()) \
         -> Tuple[Dict[int, sklearn.svm.SVC], Dict]:
@@ -436,7 +437,11 @@ def train_test_all_users_dts(exp_set: Tuple[np.ndarray, np.ndarray, np.ndarray],
     num_gen_test: int
         Number of genuine signatures for testing
     num_SF_test: int
-        Number of SF signatures for testing    
+        Number of SF signatures for testing  
+    exp_test_users: tuple
+        Range of users used for test instead of using all. 
+        This allows to employ all other users as random forgeries for training, 
+        while testing only a specific group.  
     global_threshold: float
         The threshold used to compute false acceptance and
         false rejection rates
@@ -459,7 +464,13 @@ def train_test_all_users_dts(exp_set: Tuple[np.ndarray, np.ndarray, np.ndarray],
                                   num_forg_from_dev, num_forg_from_exp, rng)
 
     #results = test_all_users(classifiers, exp_test, global_threshold)
-    results = test_all_users_dts(classifiers, exp_test, num_SF_test, global_threshold, rng)
+    if exp_test_users is not None:
+       exp_test_X, exp_test_y, exp_test_yforg = exp_test
+       mask = np.isin(exp_test_y, range(*exp_test_users))
+       subset_exp_test = (exp_test_X[mask], exp_test_y[mask], exp_test_yforg[mask] )
+       results = test_all_users_dts(classifiers, subset_exp_test, num_SF_test, global_threshold, rng) 
+    else:    
+        results = test_all_users_dts(classifiers, exp_test, num_SF_test, global_threshold, rng)
 
     return classifiers, results
 
