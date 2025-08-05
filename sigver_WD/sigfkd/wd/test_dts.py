@@ -85,6 +85,12 @@ def main(args):
 
     exp_set = get_subset(data, exp_users)
     dev_set = get_subset(data, dev_users)
+    
+    prototypical_sig = None
+    if args.protosig_path is not None:
+        prot_data = np.load(args.protosig_path)
+        prototypical_sig = prot_data['prototypes']
+        
 
     rng = np.random.RandomState(1234)
 
@@ -111,17 +117,33 @@ def main(args):
     print('EER (user thresholds): {:.2f} (+- {:.2f})'.format(np.mean(eer_u_list) * 100, np.std(eer_u_list) * 100))
     """
     for _ in range(args.folds):
-        classifiers, results = training.train_test_all_users_dts(exp_set,
-                                                             dev_set,
-                                                             svm_type=args.svm_type,
-                                                             C=args.svm_c,
-                                                             gamma=args.svm_gamma,
-                                                             num_gen_train=args.gen_for_train,
-                                                             num_forg_from_exp=args.forg_from_exp,
-                                                             num_forg_from_dev=args.forg_from_dev,
-                                                             num_gen_test=args.gen_for_test,
-                                                             num_SF_test=args.SF_for_test,
-                                                             rng=rng)
+        if args.protosig_path is None:
+            classifiers, results = training.train_test_all_users_dts(exp_set,
+                                            dev_set,
+                                            svm_type=args.svm_type,
+                                            C=args.svm_c,
+                                            gamma=args.svm_gamma,
+                                            num_gen_train=args.gen_for_train,
+                                            num_forg_from_exp=args.forg_from_exp,
+                                            num_forg_from_dev=args.forg_from_dev,
+                                            num_gen_test=args.gen_for_test,
+                                            num_SF_test=args.SF_for_test,
+                                            rng=rng)
+        else:
+            classifiers, results = training.train_test_all_users_dts_with_protosig(exp_set,
+                                            dev_set,
+                                            svm_type=args.svm_type,
+                                            C=args.svm_c,
+                                            gamma=args.svm_gamma,
+                                            num_gen_train=args.gen_for_train,
+                                            prototypical_sig=prototypical_sig,
+                                            num_gen_test=args.gen_for_test,
+                                            num_SF_test=args.SF_for_test,
+                                            rng=rng)
+        
+        
+        
+        
         this_eer_u, this_eer = results['all_metrics']['EER_userthresholds'], results['all_metrics']['EER']
         all_results.append(results)
         eer_u_list.append(this_eer_u)
@@ -168,6 +190,8 @@ def parse_args():
     #parser.add_argument('--batch-size', type=int, default=32)
     parser.add_argument('--batch-size', type=int, default=1)
     parser.add_argument('--folds', type=int, default=10)
+    
+    parser.add_argument('--protosig-path')
     
     return parser.parse_args()
 
