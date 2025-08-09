@@ -58,7 +58,8 @@ def main(args):
     model_name = args.model_path
     onnx_model = onnx.load(model_name)
     onnx.checker.check_model(onnx_model)
-    EP_list = ['CUDAExecutionProvider', 'CPUExecutionProvider']
+    #EP_list = ['CUDAExecutionProvider', 'CPUExecutionProvider']
+    EP_list = ['CPUExecutionProvider']
     ort_session = onnxruntime.InferenceSession(model_name, providers=EP_list)
 
     def process_fn(batch):
