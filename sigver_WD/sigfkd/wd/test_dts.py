@@ -181,8 +181,8 @@ def parse_args():
     parser.add_argument('--SF-for-test', type=int, default=10)
     #parser.add_argument('--forg-from_exp', type=int, default=0)
     #parser.add_argument('--forg-from_dev', type=int, default=14)
-    parser.add_argument('--forg-from_exp', type=int, default=2)
-    parser.add_argument('--forg-from_dev', type=int, default=0)
+    parser.add_argument('--forg-from-exp', type=int, default=2)
+    parser.add_argument('--forg-from-dev', type=int, default=0)
 
     parser.add_argument('--svm-type', choices=['rbf', 'linear'], default='rbf')
     parser.add_argument('--svm-c', type=float, default=1)
